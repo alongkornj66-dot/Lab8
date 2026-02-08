@@ -1,11 +1,39 @@
 <template>
   <div>
-    <h1>สร้างเมนูกาแฟ</h1>
-    <form v-on:submit.prevent="createCoffee">
-      <p>ชื่อเมนู: <input type="text" v-model="coffee.name"></p>
-      <p>ราคา: <input type="number" v-model="coffee.price"></p>
-      <p>ประเภท: <input type="text" v-model="coffee.type"></p>
-      <p><button type="submit">บันทึก</button></p>
+    <h1>Create Coffee</h1>
+
+    <form @submit.prevent="createCoffee">
+      <div>
+        <label>ชื่อเมนู</label><br />
+        <input v-model="coffee.name" type="text" required />
+      </div>
+
+      <div>
+        <label>ราคา</label><br />
+        <input v-model.number="coffee.price" type="number" required />
+      </div>
+
+      <div>
+        <label>ประเภท</label><br />
+        <select v-model="coffee.type" required>
+          <option value="">-- เลือกประเภท --</option>
+          <option value="hot">Hot</option>
+          <option value="iced">Iced</option>
+          <option value="frappe">Frappe</option>
+        </select>
+      </div>
+
+      <div>
+        <label>รายละเอียด</label><br />
+        <textarea v-model="coffee.description"></textarea>
+      </div>
+
+      <br />
+
+      <button type="submit">บันทึกเมนู</button>
+      <button type="button" @click="navigateTo('/coffees')">
+        ยกเลิก
+      </button>
     </form>
   </div>
 </template>
@@ -18,8 +46,9 @@ export default {
     return {
       coffee: {
         name: '',
-        price: '',
-        type: ''
+        price: null,
+        type: '',
+        description: ''
       }
     }
   },
@@ -27,10 +56,14 @@ export default {
     async createCoffee () {
       try {
         await CoffeesService.post(this.coffee)
-        this.$router.push({ name: 'coffees' })
+        alert('เพิ่มเมนูกาแฟเรียบร้อย')
+        this.$router.push('/coffees')
       } catch (err) {
         console.log(err)
       }
+    },
+    navigateTo (route) {
+      this.$router.push(route)
     }
   }
 }

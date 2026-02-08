@@ -1,15 +1,20 @@
+const path = require('path')
+
 module.exports = {
-    port: 8081,
-    db: {
-        database: process.env.DB_NAME || 'nvWebblogDb',
-        user: process.env.DB_User || 'root',
-        password: process.env.DB_PASS || '',
-        options: {
-            dialect: process.env.DIALECT || 'sqlite',
-            storage: './nvwebblog-db.sqlite'
-        }
-    },
-    authentication: {
-        jwtSecret: process.env.JWT_SECRET || 'secret'
+  port: process.env.PORT || 8081,
+
+  db: {
+    database: 'coffeeshop-db',
+    user: 'root',
+    password: 'root',
+    options: {
+      dialect: 'sqlite',
+      storage: './coffeeshop-db.sqlite',
+      logging: false
     }
+  },
+
+  authentication: {
+    jwtSecret: process.env.JWT_SECRET || 'secret'
+  }
 }

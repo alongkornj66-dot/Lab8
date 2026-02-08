@@ -1,25 +1,20 @@
 const express = require('express')
+const bodyParser = require('body-parser')
 const cors = require('cors')
-const { sequelize } = require('./models')
-const config = require('./config/config')
 
 const app = express()
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-app.use(cors())
-// กำหนดให้ folder 'public' เป็น static resource ที่เข้าถึงได้ผ่าน path '/assets'
-app.use('/assets', express.static('public'))
 
-require('./userPassport')
-// --- Routes Section ---
+app.use(cors())
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+
 require('./routes')(app)
 
-// --- Server Startup Section ---
-const port = config.port
+require('./userPassport')
+require('./routes')(app)
 
-sequelize.sync({ force: false })
-    .then(() => {
-        app.listen(config.port, '0.0.0.0', () => {
-            console.log('Server running on port ' + port)
-        })
-    })
+const config = require('./config/config')
+
+app.listen(config.port, () => {
+  console.log(`Server started on port ${config.port}`)
+})

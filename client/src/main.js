@@ -1,8 +1,24 @@
 import { createApp } from 'vue'
-import './style.css'
+import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+
 import App from './App.vue'
 import router from './router'
 
-const app = createApp(App) // สร้าง App
-app.use(router) // ใช้งาน Router
-app.mount('#app') // แปะลงไปที่ id="app" ใน index.html
+// ⭐ เพิ่มบรรทัดนี้
+import CoffeeHeader from './components/CoffeeHeader.vue'
+
+import './style.css'
+
+const app = createApp(App)
+
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
+
+app.use(pinia)
+app.use(router)
+
+// ⭐ ลงทะเบียน Global Component
+app.component('coffee-header', CoffeeHeader)
+
+app.mount('#app')

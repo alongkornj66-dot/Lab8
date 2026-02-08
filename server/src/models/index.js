@@ -1,5 +1,5 @@
-const fs = require('node:fs')
-const path = require('node:path')
+const fs = require('fs')
+const path = require('path')
 const Sequelize = require('sequelize')
 const config = require('../config/config')
 const db = {}
@@ -7,8 +7,7 @@ const db = {}
 const sequelize = new Sequelize(
     config.db.database,
     config.db.user,
-    config.db.password,
-    config.db.options
+    config.db.password,    config.db.options
 )
 
 // โหลดไฟล์ Model ทั้งหมดในโฟลเดอร์นี้อัตโนมัติ
@@ -25,5 +24,6 @@ fs.readdirSync(__dirname)
 db.sequelize = sequelize
 db.Sequelize = Sequelize
 
-module.exports = db
+sequelize.sync({ alter: true })
 
+module.exports = db

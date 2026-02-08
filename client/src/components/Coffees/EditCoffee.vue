@@ -1,12 +1,42 @@
 <template>
   <div>
-    <h1>แก้ไขเมนูกาแฟ</h1>
-    <form v-on:submit.prevent="editCoffee">
-      <p>ชื่อเมนู: <input type="text" v-model="coffee.name"></p>
-      <p>ราคา: <input type="number" v-model="coffee.price"></p>
-      <p>ประเภท: <input type="text" v-model="coffee.type"></p>
-      <p><button type="submit">แก้ไขข้อมูล</button></p>
-    </form>
+    <h1>Edit Coffee</h1>
+
+    <!-- แสดงฟอร์มเมื่อโหลดข้อมูลมาแล้ว -->
+    <div v-if="coffee">
+      <p>
+        Name:
+        <input v-model="coffee.name" type="text" />
+      </p>
+
+      <p>
+        Price:
+        <input v-model="coffee.price" type="number" />
+      </p>
+
+      <p>
+        Type:
+        <select v-model="coffee.type">
+          <option value="hot">hot</option>
+          <option value="iced">iced</option>
+          <option value="frappe">frappe</option>
+        </select>
+      </p>
+
+      <p>
+        Description:
+        <textarea v-model="coffee.description"></textarea>
+      </p>
+
+      <p>
+        <button @click="updateCoffee">บันทึกการแก้ไข</button>
+      </p>
+    </div>
+
+    <!-- ระหว่างโหลดข้อมูล -->
+    <div v-else>
+      Loading...
+    </div>
   </div>
 </template>
 
@@ -16,26 +46,26 @@ import CoffeesService from '../../services/CoffeesService'
 export default {
   data () {
     return {
-      coffee: {
-        name: '',
-        price: '',
-        type: ''
-      }
+      coffee: null
     }
   },
+
   async created () {
-    try {
-      let coffeeId = this.$route.params.coffeeId
-      this.coffee = (await CoffeesService.show(coffeeId)).data
-    } catch (error) {
-      console.log(error)
-    }
+    // 1️⃣ ดึง coffeeId จาก URL
+    const coffeeId = this.$route.params.coffeeId
+
+    // 2️⃣ ดึงข้อมูลเดิมจาก backend
+    this.coffee = (await CoffeesService.show(coffeeId)).data
   },
+
   methods: {
-    async editCoffee () {
+    async updateCoffee () {
       try {
+        // 3️⃣ ส่งข้อมูลไปอัปเดต
         await CoffeesService.put(this.coffee)
-        this.$router.push({ name: 'coffees' })
+
+        // 4️⃣ กลับไปหน้ารายการกาแฟ
+        this.$router.push('/coffees')
       } catch (err) {
         console.log(err)
       }

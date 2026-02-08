@@ -1,26 +1,51 @@
 <template>
   <div>
-    <h2>รายการเมนูกาแฟ</h2>
-    <p><button v-on:click="navigateTo('/coffee/create')">สร้างเมนูใหม่</button></p>
+    <h1>Get All Coffees</h1>
 
-    <h2>จำนวนเมนู {{ coffees.length }}</h2>
+    <div>จำนวนเมนู {{ coffees.length }}</div>
 
-    <div v-for="coffee in coffees" v-bind:key="coffee.id">
-      <p>id: {{ coffee.id }}</p>
-      <p>ชื่อเมนู: {{ coffee.name }}</p>
-      <p>ราคา: {{ coffee.price }}</p>
-      <p>ประเภท: {{ coffee.type }}</p>
-      <p>
-        <button v-on:click="navigateTo('/coffee/edit/'+ coffee.id)">แก้ไขข้อมูล</button>
-        <button v-on:click="deleteCoffee(coffee)">ลบข้อมูล</button>
-      </p>
-      <hr>
+    <div v-if="coffees.length > 0">
+      <div
+        v-for="coffee in coffees"
+        :key="coffee.id"
+        style="margin-bottom: 15px;"
+      >
+        <div>id: {{ coffee.id }}</div>
+        <div>ชื่อเมนู: {{ coffee.name }}</div>
+        <div>ราคา: {{ coffee.price }}</div>
+        <div>ประเภท: {{ coffee.type }}</div>
+
+        <p>
+          <!-- ทุกคนดูรายละเอียดได้ -->
+          <button @click="navigateTo('/coffee/' + coffee.id)">
+            ดูรายละเอียด
+          </button>
+
+          <!-- 🔒 ปุ่มจัดการ แสดงเฉพาะตอน Login -->
+          <template v-if="isLoggedIn">
+            <button @click="navigateTo('/coffee/edit/' + coffee.id)">
+              แก้ไข
+            </button>
+
+            <button @click="deleteCoffee(coffee)">
+              ลบเมนู
+            </button>
+          </template>
+        </p>
+
+        <hr />
+      </div>
+    </div>
+
+    <div v-else>
+      ยังไม่มีเมนูกาแฟ
     </div>
   </div>
 </template>
 
 <script>
 import CoffeesService from '../../services/CoffeesService'
+import { useAuthenStore } from '../../stores/authen'
 
 export default {
   data () {
@@ -28,16 +53,26 @@ export default {
       coffees: []
     }
   },
-  // ดึงข้อมูลทันทีเมื่อเข้าหน้านี้
+
   async created () {
-    this.coffees = (await CoffeesService.index()).data
+    this.refreshData()
   },
+
+  computed: {
+    // ✅ ตรวจสอบสถานะ Login จาก Pinia
+    isLoggedIn () {
+      const authenStore = useAuthenStore()
+      return authenStore.isUserLoggedIn
+    }
+  },
+
   methods: {
     navigateTo (route) {
       this.$router.push(route)
     },
+
     async deleteCoffee (coffee) {
-      let result = confirm("คุณต้องการลบข้อมูลใช่หรือไม่?")
+      const result = confirm('Want to delete?')
       if (result) {
         try {
           await CoffeesService.delete(coffee)
@@ -47,11 +82,10 @@ export default {
         }
       }
     },
-    async refreshData() {
+
+    async refreshData () {
       this.coffees = (await CoffeesService.index()).data
     }
   }
 }
 </script>
-<style scoped>
-</style>

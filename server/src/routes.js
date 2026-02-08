@@ -1,36 +1,33 @@
-const isAuthenController = require('./controllers/isAuthenController')
+// src/routes.js
+
+const CoffeeController = require('./controllers/CoffeeController')
 const UserController = require('./controllers/UserController')
 const UserAuthenController = require('./controllers/UserAuthenController')
-const BlogController = require('./controllers/BlogController')
-const UploadController = require('./controllers/UploadController')
-const CoffeeController = require('./controllers/CoffeeController') // <--- เพิ่มตรงนี้ (1)
-
-const fileUploadMiddleware = require('./middleware/fileUpload')
+const isAuthenController = require('./controllers/isAuthenController')
 
 module.exports = (app) => {
-  // User Management
-  app.get('/users', isAuthenController, UserController.index)
-  app.post('/user', UserController.create)
-  app.put('/user/:userId', UserController.put)
-  app.delete('/user/:userId', UserController.remove)
-  app.get('/user/:userId', UserController.show)
+
+  // ===============================
+  // Auth Routes
+  // ===============================
   app.post('/login', UserAuthenController.login)
   app.post('/register', UserAuthenController.register)
 
-  // Blog Management
-  app.post('/blog', BlogController.create)
-  app.put('/blog/:blogId', BlogController.put)
-  app.delete('/blog/:blogId', BlogController.remove)
-  app.get('/blog/:blogId', BlogController.show)
-  app.get('/blogs', BlogController.index)
+  // ===============================
+  // Users Routes (ต้อง login ก่อน)
+  // ===============================
+  app.get('/users', isAuthenController, UserController.index)
+  app.get('/user/:userId', isAuthenController, UserController.show)
+  app.post('/user', isAuthenController, UserController.create)
+  app.put('/user/:userId', isAuthenController, UserController.put)
+  app.delete('/user/:userId', isAuthenController, UserController.remove)
 
-  // Upload Management
-  app.post('/upload', fileUploadMiddleware, UploadController.upload)
-
-  // Coffee Management (ร้านกาแฟ) <--- เพิ่มตรงนี้ (2)
+  // ===============================
+  // Coffee Routes
+  // ===============================
   app.get('/coffees', CoffeeController.index)
+  app.post('/coffee', isAuthenController, CoffeeController.create)
+  app.put('/coffee/:coffeeId', isAuthenController, CoffeeController.put)
+  app.delete('/coffee/:coffeeId', isAuthenController, CoffeeController.remove)
   app.get('/coffee/:coffeeId', CoffeeController.show)
-  app.post('/coffee', CoffeeController.post)
-  app.put('/coffee/:coffeeId', CoffeeController.put)
-  app.delete('/coffee/:coffeeId', CoffeeController.delete)
 }
