@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <!--  Navbar ร้านกาแฟ -->
+    <!-- ⭐ Navbar ร้านกาแฟ -->
     <coffee-header />
 
     <!-- แสดงหน้าต่าง ๆ ตาม route -->

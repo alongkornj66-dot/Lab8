@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { useAuthenStore } from '@/stores/authen'
+import { useAuthenStore } from '@/stores/authen';
 
 export default {
   name: 'CoffeeHeader',
@@ -57,7 +57,7 @@ export default {
 
 <style scoped>
 .coffee-navbar {
-  background-color: #6f4e37; /* น้ำตาลกาแฟ ☕ */
+  background-color: #346f2f; /* น้ำตาลกาแฟ ☕ */
   width: 100%;
   padding: 10px 0;
 }
@@ -81,11 +81,11 @@ export default {
 }
 
 .coffee-navbar .nav li a:hover {
-  background-color: #8b5a2b;
+  background-color: #2b8b2e;
 }
 
 .coffee-navbar .nav li a.router-link-active {
-  background-color: #a0522d;
+  background-color: #4da02d;
 }
 
 .clearfix {

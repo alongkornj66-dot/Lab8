@@ -1,54 +1,73 @@
 const { Coffee } = require('../models')
 
 module.exports = {
-
-  // ดูรายการกาแฟทั้งหมด
+  // Get all coffees
   async index (req, res) {
-    const coffees = await Coffee.findAll()
-    res.send(coffees)
+    try {
+      const coffees = await Coffee.findAll()
+      res.send(coffees)
+    } catch (err) {
+      res.status(500).send({
+        error: 'The coffees information was incorrect'
+      })
+    }
   },
-
-  // เพิ่มเมนูกาแฟใหม่
+  // Create coffee
   async create (req, res) {
     try {
       const coffee = await Coffee.create(req.body)
-      res.send(coffee)
+      res.send(coffee.toJSON())
     } catch (err) {
-      res.status(500).send(err)
+      res.status(500).send({
+        error: 'Create coffee incorrect'
+      })
     }
   },
-
-  // แก้ไขข้อมูลกาแฟ
+  // Edit coffee
   async put (req, res) {
     try {
       await Coffee.update(req.body, {
-        where: { id: req.params.coffeeId }
+        where: {
+          id: req.params.coffeeId
+        }
       })
-      res.send({ message: 'Coffee updated' })
+      res.send(req.body)
     } catch (err) {
-      res.status(500).send(err)
+      res.status(500).send({
+        error: 'Update coffee incorrect'
+      })
     }
   },
-
-  // ลบเมนูกาแฟ
-  async remove (req, res) {
+  // Delete coffee
+  async delete (req, res) {
     try {
-      await Coffee.destroy({
-        where: { id: req.params.coffeeId }
+      const coffee = await Coffee.findOne({
+        where: {
+          id: req.params.coffeeId
+        }
       })
-      res.send({ message: 'Coffee deleted' })
+      if (!coffee) {
+        return res.status(403).send({
+          error: 'The coffee information was incorrect'
+        })
+      }
+      await coffee.destroy()
+      res.send(coffee)
     } catch (err) {
-      res.status(500).send(err)
+      res.status(500).send({
+        error: 'The coffee information was incorrect'
+      })
     }
   },
-
-  // ดูรายละเอียดกาแฟ
+  // Show coffee
   async show (req, res) {
     try {
       const coffee = await Coffee.findByPk(req.params.coffeeId)
       res.send(coffee)
     } catch (err) {
-      res.status(500).send(err)
+      res.status(500).send({
+        error: 'The coffee information was incorrect'
+      })
     }
   }
 }
