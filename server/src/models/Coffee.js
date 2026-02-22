@@ -3,7 +3,8 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     price: DataTypes.STRING,
     type: DataTypes.STRING,
-    status: DataTypes.STRING
+    status: DataTypes.STRING,
+    image: DataTypes.STRING
   })
   return Coffee
 }

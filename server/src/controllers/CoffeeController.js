@@ -1,4 +1,5 @@
 const { Coffee } = require('../models')
+const path = require('path')
 
 module.exports = {
   // Get all coffees
@@ -15,7 +16,10 @@ module.exports = {
   // Create coffee
   async create (req, res) {
     try {
-      const coffee = await Coffee.create(req.body)
+      // If request has image path already (from upload), include it
+      const payload = Object.assign({}, req.body)
+      if (req.body.image) payload.image = req.body.image
+      const coffee = await Coffee.create(payload)
       res.send(coffee.toJSON())
     } catch (err) {
       res.status(500).send({
@@ -26,6 +30,7 @@ module.exports = {
   // Edit coffee
   async put (req, res) {
     try {
+      // allow updating image via req.body.image
       await Coffee.update(req.body, {
         where: {
           id: req.params.coffeeId
@@ -68,6 +73,20 @@ module.exports = {
       res.status(500).send({
         error: 'The coffee information was incorrect'
       })
+    }
+  }
+  ,
+  // Upload an image file and return its accessible path
+  async upload (req, res) {
+    try {
+      if (!req.file) {
+        return res.status(400).send({ error: 'No file uploaded' })
+      }
+      // return the public path so frontend can use it directly
+      const imagePath = req.protocol + '://' + req.get('host') + '/public/uploads/' + req.file.filename
+      res.send({ image: imagePath })
+    } catch (err) {
+      res.status(500).send({ error: 'Upload failed' })
     }
   }
 }

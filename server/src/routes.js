@@ -1,11 +1,18 @@
 // src/routes.js
 
 const CoffeeController = require('./controllers/CoffeeController')
+const MenuController = require('./controllers/MenuController')
 const UserController = require('./controllers/UserController')
 const UserAuthenController = require('./controllers/UserAuthenController')
 const isAuthenController = require('./controllers/isAuthenController')
+const coffeeUpload = require('./middleware/coffeeUpload')
 
 module.exports = (app) => {
+
+  // Test route
+  app.get('/test', (req, res) => {
+    res.send({ message: 'Server is running!' })
+  })
 
   // ===============================
   // Auth Routes
@@ -30,4 +37,15 @@ module.exports = (app) => {
   app.put('/coffee/:coffeeId', CoffeeController.put)
   app.delete('/coffee/:coffeeId', CoffeeController.delete)
   app.get('/coffee/:coffeeId', CoffeeController.show)
+  app.post('/coffee-upload', coffeeUpload.single('image'), CoffeeController.upload)
+
+  // ===============================
+  // Menu Routes
+  // ===============================
+  app.get('/menus', MenuController.index)
+  app.post('/menu', MenuController.create)
+  app.put('/menu/:menuId', MenuController.put)
+  app.delete('/menu/:menuId', MenuController.delete)
+  app.get('/menu/:menuId', MenuController.show)
+  app.post('/menu-upload', coffeeUpload.single('image'), MenuController.upload)
 }

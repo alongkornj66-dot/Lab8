@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Menu Save</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    .success {
+      color: green;
+      margin-top: 20px;
+    }
+    .error {
+      color: red;
+      margin-top: 20px;
+    }
+    #response {
+      background-color: #f0f0f0;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>ทดสอบบันทึกเมนู</h1>
+  
+  <form id="menuForm">
+    <div class="form-group">
+      <label>ชื่อเมนู:</label>
+      <input type="text" id="name" value="ข้าวหมูปิ้ง" required />
+    </div>
+
+    <div class="form-group">
+      <label>ราคา:</label>
+      <input type="text" id="price" value="50" required />
+    </div>
+
+    <div class="form-group">
+      <label>สถานะ:</label>
+      <select id="status">
+        <option value="มีจำหน่าย">มีจำหน่าย</option>
+        <option value="หมด">หมด</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>รายละเอียด:</label>
+      <textarea id="description" rows="4">ข้าวหมูปิ้งสไตล์ไทยแผนดั้งเดิม</textarea>
+    </div>
+
+    <button type="submit">บันทึกเมนู</button>
+    <button type="button" onclick="testConnection()">ทดสอบการเชื่อมต่อ</button>
+  </form>
+
+  <div id="response"></div>
+
+  <script>
+    const responseDiv = document.getElementById('response');
+
+    function testConnection() {
+      console.log('Testing connection to server...');
+      responseDiv.innerHTML = 'กำลังทดสอบการเชื่อมต่อ...';
+      
+      fetch('http://localhost:8081/test')
+        .then(res => res.json())
+        .then(data => {
+          responseDiv.innerHTML = '✓ เชื่อมต่อเซิร์ฟเวอร์สำเร็จ!\n' + JSON.stringify(data, null, 2);
+          responseDiv.className = 'success';
+        })
+        .catch(err => {
+          responseDiv.innerHTML = '✗ ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์:\n' + err.message;
+          responseDiv.className = 'error';
+        });
+    }
+
+    document.getElementById('menuForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const menuData = {
+        name: document.getElementById('name').value,
+        price: document.getElementById('price').value,
+        status: document.getElementById('status').value,
+        description: document.getElementById('description').value,
+        image: ''
+      };
+
+      console.log('Sending menu data:', menuData);
+      responseDiv.innerHTML = 'กำลังบันทึก...';
+
+      try {
+        const response = await fetch('http://localhost:8081/menu', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(menuData)
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+          responseDiv.innerHTML = '✓ บันทึกเมนูสำเร็จ!\n\nข้อมูลที่บันทึก:\n' + JSON.stringify(data, null, 2);
+          responseDiv.className = 'success';
+          console.log('Menu saved:', data);
+        } else {
+          responseDiv.innerHTML = '✗ เกิดข้อผิดพลาด:\n' + JSON.stringify(data, null, 2);
+          responseDiv.className = 'error';
+        }
+      } catch (error) {
+        responseDiv.innerHTML = '✗ เกิดข้อผิดพลาด:\n' + error.message;
+        responseDiv.className = 'error';
+        console.error('Error:', error);
+      }
+    });
+
+    // Auto test connection on load
+    window.addEventListener('load', () => {
+      console.log('Page loaded, testing connection...');
+      setTimeout(testConnection, 500);
+    });
+  </script>
+</body>
+</html>
