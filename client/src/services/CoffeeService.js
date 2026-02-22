@@ -10,6 +10,13 @@ export default {
   post (coffee) {
     return Api().post('coffee', coffee)
   },
+  upload (formData) {
+    return Api().post('coffee-upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  },
   put (coffee) {
     return Api().put('coffee/' + coffee.id, coffee)
   },

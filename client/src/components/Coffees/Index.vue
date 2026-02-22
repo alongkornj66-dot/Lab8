@@ -2,12 +2,19 @@
   <div>
     <h2>รายการเมนูกาแฟ</h2>
     <p><button @click="navigateTo('/coffee/create')">สร้างเมนูใหม่</button></p>
-    <div v-for="coffee in coffees" :key="coffee.id">
-      <p>id: {{ coffee.id }}</p>
-      <p>ชื่อเมนู: {{ coffee.name }}</p>
-      <p>ราคา: {{ coffee.price }}</p>
-      <p>ประเภท: {{ coffee.type }}</p>
-      <p>สถานะ: {{ coffee.status }}</p>
+    <div v-for="coffee in coffees" :key="coffee.id" style="display:flex;align-items:center;gap:12px">
+      <div style="display:flex;align-items:center;gap:8px;flex:1">
+        <img v-if="coffee.image" :src="coffee.image" alt="coffee" class="coffee-thumb" />
+        <div>
+          <p>id: {{ coffee.id }}</p>
+          <p>ชื่อเมนู: {{ coffee.name }}</p>
+        </div>
+      </div>
+      <div style="flex-basis:200px">
+        <p>ราคา: {{ coffee.price }}</p>
+        <p>ประเภท: {{ coffee.type }}</p>
+        <p>สถานะ: {{ coffee.status }}</p>
+      </div>
       <p>
         <button @click="navigateTo('/coffee/'+coffee.id)">ดูข้อมูล</button>
         <button @click="navigateTo('/coffee/edit/'+coffee.id)">แก้ไข</button>
@@ -51,3 +58,12 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.coffee-thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+</style>

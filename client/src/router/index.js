@@ -7,10 +7,10 @@ import UserIndex from '../components/Users/Index.vue'
 import UserShow from '../components/Users/ShowUser.vue'
 
 // ===== Menus =====
-// import MenuCreate from '../components/Menus/CreateMenu.vue'
-// import MenuEdit from '../components/Menus/EditMenu.vue'
-// import MenuIndex from '../components/Menus/Index.vue'
-// import MenuShow from '../components/Menus/ShowMenu.vue'
+import MenuCreate from '../components/Menus/CreateMenu.vue'
+import MenuEdit from '../components/Menus/EditMenu.vue'
+import MenuIndex from '../components/Menus/Index.vue'
+import MenuShow from '../components/Menus/ShowMenu.vue'
 
 // ===== Coffees =====
 import CoffeeCreate from '../components/coffees/CreateCoffee.vue'
@@ -71,26 +71,26 @@ const router = createRouter({
     },
 
     // ---------- Menu Routes ----------
-    // {
-    //   path: '/menus',
-    //   name: 'menus',
-    //   component: MenuIndex
-    // },
-    // {
-    //   path: '/menu/create',
-    //   name: 'menu-create',
-    //   component: MenuCreate
-    // },
-    // {
-    //   path: '/menu/edit/:menuId',
-    //   name: 'menu-edit',
-    //   component: MenuEdit
-    // },
-    // {
-    //   path: '/menu/:menuId',
-    //   name: 'menu-show',
-    //   component: MenuShow
-    // },
+    {
+      path: '/menus',
+      name: 'menus',
+      component: MenuIndex
+    },
+    {
+      path: '/menu/create',
+      name: 'menu-create',
+      component: MenuCreate
+    },
+    {
+      path: '/menu/edit/:menuId',
+      name: 'menu-edit',
+      component: MenuEdit
+    },
+    {
+      path: '/menu/:menuId',
+      name: 'menu-show',
+      component: MenuShow
+    },
 
     // ---------- Coffee Routes ----------
     {
